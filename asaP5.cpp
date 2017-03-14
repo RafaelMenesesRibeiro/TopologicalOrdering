@@ -106,15 +106,23 @@ bool Graph::graphUniqueSolution() {
 	int sourceVertex, destinationVertex;
 	int requiredEdges = this->graphVertices - 1;
 	int countedEdges = 0;
+	
+	if (this->getInsuficient()) return true;
+
 	forward_list<int>::const_iterator ci;
 	for (i = 0; i < requiredEdges; i++) {
 		sourceVertex = sorted[i];
 		destinationVertex = sorted[i + 1];
+		if (this->graphHasEdge(i + 1, destinationVertex)) {
+			countedEdges++;
+		}
+/*		
 		for ( ci = this->adjacencyList[sourceVertex-1].begin(); ci != this->adjacencyList[sourceVertex-1].end(); ++ci )
 			if ( *ci == destinationVertex ) {
 				countedEdges++;
 				break;
 			}
+*/
 		if (countedEdges != (i + 1) ) {
 			graphInsuficient();
 			return false;
@@ -172,21 +180,22 @@ int main() {
 		graph.graphCreateEdge(source, destination);
 	}
 	//Checks if the #Edges if suficient (#E >= #V - 1)
-	if (edges < vertices - 1) {
-		cout << "Insuficiente" << endl;
-		return 0;
-	}
+	if (edges < vertices - 1) graph.graphInsuficient();
+
 	if (graph.getIncoherent()) {
 		cout << "Incoerente" << endl;
 		return 0;
 	}
 	
 	graph.graphDFS();
+	if (graph.getIncoherent()) {
+		cout << "Incoerente" << endl;
+		return 0;
+	}
+
 	graph.graphUniqueSolution();
 
-	//Prints the answer
 	if (graph.getInsuficient()) cout << "Insuficiente" << endl;
-	else if (graph.getIncoherent()) cout << "Incoerente" << endl;
 	else if (!graph.getInsuficient() && !graph.getIncoherent()) cout << graph.toString() << endl;
 	return 0;
 }
