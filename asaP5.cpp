@@ -123,7 +123,7 @@ void Graph::graphDFSVisit(int sourceVertex) {
 }
 bool Graph::graphUniqueSolution() {
 	int i;
-	int sourceVertex, destinationVertex;
+	int destinationVertex;
 	int requiredEdges = this->graphVertices - 1;
 	int countedEdges = 0;
 	
@@ -131,7 +131,6 @@ bool Graph::graphUniqueSolution() {
 
 	list<int>::const_iterator ci;
 	for (i = 0; i < requiredEdges; i++) {
-		sourceVertex = sorted[i];
 		destinationVertex = sorted[i + 1];
 		if (this->graphHasEdge(i + 1, destinationVertex)) {
 			countedEdges++;
