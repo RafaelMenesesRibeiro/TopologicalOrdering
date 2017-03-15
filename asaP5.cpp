@@ -46,12 +46,12 @@ class Graph {
 	public:
 		//Main functions
 		Graph(int vertices, int edges);
+		~Graph();
 		void graphCreateEdge(int source, int destination);
 		void graphDFS();
 		void graphDFSVisit(int sourceVertex);
 		bool graphUniqueSolution();
 		//Auxiliar functions
-		void graphInitAuxiliar();
 		bool graphHasEdge(int source, int destination);
 		void toString();
 		//Result functions
@@ -70,6 +70,25 @@ Graph::Graph(int vertices, int edges) {
 	this->adjacencyList = new list<int>[vertices];
 	this->isIncoherent = false;
 	this->isInsuficient = false;
+
+	//Initializes all the auxiliar arrays
+	this->color = new int[vertices];
+	this->parent = new int[vertices];
+	this->discoveryTime = new int[vertices];
+	this->finishTime = new int[vertices];
+	this->sorted = new int[vertices];
+	for (int i = 0; i < vertices; i++) {
+		this->color[i] = WHITE;
+		this->parent[i] = -1;
+	}
+}
+Graph::~Graph() {
+	delete[] this->color;
+	delete[] this->parent;
+	delete[] this->discoveryTime;
+	delete[] this->finishTime;
+	delete[] this->sorted;
+	delete[] this->adjacencyList;
 }
 
 void Graph::graphCreateEdge(int source, int	destination) {
@@ -78,7 +97,6 @@ void Graph::graphCreateEdge(int source, int	destination) {
 		graphIncoherent();
 }
 void Graph::graphDFS() {
-	graphInitAuxiliar();
 	timeCurrent = 0;
 	for (int i = 0; i < this->graphVertices; i++)
 		if (this->color[i] == WHITE)
@@ -118,13 +136,6 @@ bool Graph::graphUniqueSolution() {
 		if (this->graphHasEdge(i + 1, destinationVertex)) {
 			countedEdges++;
 		}
-/*		
-		for ( ci = this->adjacencyList[sourceVertex-1].begin(); ci != this->adjacencyList[sourceVertex-1].end(); ++ci )
-			if ( *ci == destinationVertex ) {
-				countedEdges++;
-				break;
-			}
-*/
 		if (countedEdges != (i + 1) ) {
 			graphInsuficient();
 			return false;
@@ -136,19 +147,6 @@ bool Graph::graphUniqueSolution() {
 /*------------------------------------------------------------------------------
 //	AUXILIAR FUNCTIONS
 ------------------------------------------------------------------------------*/
-void Graph::graphInitAuxiliar() {
-	int vertices = this->graphVertices;
-	this->color = new int[vertices];
-	this->parent = new int[vertices];
-	this->discoveryTime = new int[vertices];
-	this->finishTime = new int[vertices];
-	this->sorted = new int[vertices];
-
-	for (int i = 0; i < vertices; i++) {
-		this->color[i] = WHITE;
-		this->parent[i] = -1;
-	}
-}
 bool Graph::graphHasEdge(int source, int destination) {
 	list<int>::const_iterator l;
 	for(l = this->adjacencyList[source - 1].begin(); l != this->adjacencyList[source - 1].end(); ++l)
@@ -157,9 +155,10 @@ bool Graph::graphHasEdge(int source, int destination) {
 	return false;
 }
 void Graph::toString() {
-	for (int i = 0; i < this->graphVertices; i++)
+	int i;
+	for (i = 0; i < this->graphVertices - 1; i++)
 		cout << this->sorted[i] << " ";
-	cout << endl;
+	cout << this->sorted[i] << endl;
 }
 
 /*------------------------------------------------------------------------------
