@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 #include <iostream>
-#include <forward_list>
+#include <list>
 #include <string>
 #include <algorithm>
 #include <vector>
@@ -33,15 +33,15 @@ class Graph {
 	private:
 		int graphEdges;
 		int graphVertices;
-		bool isIncoherent = false;
-		bool isInsuficient = false;
+		bool isIncoherent;
+		bool isInsuficient;
 		int graphSource;
 		int *sorted;
 		int *color;
 		int *parent;
 		int *discoveryTime;
 		int *finishTime;
-		forward_list<int> *adjacencyList;
+		list<int> *adjacencyList;
 
 	public:
 		//Main functions
@@ -53,7 +53,7 @@ class Graph {
 		//Auxiliar functions
 		void graphInitAuxiliar();
 		bool graphHasEdge(int source, int destination);
-		string toString();
+		void toString();
 		//Result functions
 		void graphIncoherent() 		{ isIncoherent = true; }
 		void graphInsuficient() 	{ isInsuficient = true; }
@@ -67,7 +67,9 @@ class Graph {
 Graph::Graph(int vertices, int edges) {
 	this->graphEdges = edges;
 	this->graphVertices = vertices;
-	this->adjacencyList = new forward_list<int>[vertices];
+	this->adjacencyList = new list<int>[vertices];
+	this->isIncoherent = false;
+	this->isInsuficient = false;
 }
 
 void Graph::graphCreateEdge(int source, int	destination) {
@@ -85,8 +87,8 @@ void Graph::graphDFS() {
 void Graph::graphDFSVisit(int sourceVertex) {
 	this->color[sourceVertex] = GREY;
 	this->discoveryTime[sourceVertex] = timeCurrent++;
-	forward_list<int> li = adjacencyList[sourceVertex];	
-	for (forward_list<int>::const_iterator ci = li.begin(); ci != li.end(); ++ci) {
+	list<int> li = adjacencyList[sourceVertex];	
+	for (list<int>::const_iterator ci = li.begin(); ci != li.end(); ++ci) {
 		int index = *ci - 1;
 		if (this->color[index] == GREY) {
 			this->graphIncoherent();
@@ -109,7 +111,7 @@ bool Graph::graphUniqueSolution() {
 	
 	if (this->getInsuficient()) return true;
 
-	forward_list<int>::const_iterator ci;
+	list<int>::const_iterator ci;
 	for (i = 0; i < requiredEdges; i++) {
 		sourceVertex = sorted[i];
 		destinationVertex = sorted[i + 1];
@@ -148,17 +150,16 @@ void Graph::graphInitAuxiliar() {
 	}
 }
 bool Graph::graphHasEdge(int source, int destination) {
-	forward_list<int>::const_iterator l;
+	list<int>::const_iterator l;
 	for(l = this->adjacencyList[source - 1].begin(); l != this->adjacencyList[source - 1].end(); ++l)
 		if (*l == destination)
 			return true;
 	return false;
 }
-string Graph::toString() {
-	string result = "";
+void Graph::toString() {
 	for (int i = 0; i < this->graphVertices; i++)
-		result += to_string(this->sorted[i]) + " ";
-	return result;
+		cout << this->sorted[i] << " ";
+	cout << endl;
 }
 
 /*------------------------------------------------------------------------------
@@ -196,6 +197,6 @@ int main() {
 	graph.graphUniqueSolution();
 
 	if (graph.getInsuficient()) cout << "Insuficiente" << endl;
-	else if (!graph.getInsuficient() && !graph.getIncoherent()) cout << graph.toString() << endl;
+	else if (!graph.getInsuficient() && !graph.getIncoherent()) graph.toString();
 	return 0;
 }
