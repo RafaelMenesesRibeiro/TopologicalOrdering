@@ -46,7 +46,7 @@ class Graph {
 		void DFS();
 		void DFSVisit(int sourceVertex);
 		bool hasUniqueSolution();
-		
+
 		//Auxiliar functions
 		bool isIncoherent()	 	{ return _incoherency; }
 		bool isInsuficient() 	{ return _insuficiency; }
@@ -130,12 +130,12 @@ bool Graph::hasPath(int source, int destination) {
 		if (*l == destination) return true;
 	return false;
 }
-void Graph::toString() {
+ostream& Graph::operator<<(ostream& os, const Graph &graph) {
 	//Prints the unique topological order (if there is one).
 	int i;
 	for (i = 0; i < this->_vertices - 1; i++)
-		cout << this->_topology[i] << " ";
-	cout << this->_topology[i] << endl;
+		os << this->_topology[i] << " ";
+	os << this->_topology[i];
 }
 
 /*------------------------------------------------------------------------------
@@ -161,9 +161,9 @@ int main() {
 		cout << "Incoerente" << endl;
 		return 0;
 	}
-	
+
 	graph.DFS(); //Performs a DFS (to get a topological solution).
-	
+
 	//If it found the graph to be cyclic in the DFS, returns.
 	if (graph.isIncoherent()) {
 		cout << "Incoerente" << endl;
@@ -173,6 +173,7 @@ int main() {
 	graph.hasUniqueSolution(); //Checks if the graph has a unique topological order.
 
 	if (graph.isInsuficient()) cout << "Insuficiente" << endl; //If it found it doens't, returns.
-	else if (!graph.isInsuficient() && !graph.isIncoherent()) graph.toString(); //If it has, prints it.
+	else if (!graph.isInsuficient() && !graph.isIncoherent())
+		cout << graph << endl; //If it has, prints it.
 	return 0;
 }
