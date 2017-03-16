@@ -102,8 +102,8 @@ void Graph::DFSVisit(int sourceVertex) {
 	//Indicates this vertex as been visited as well as all of it's children.
 	this->_color[sourceVertex] = BLACK;
 	//Adds the vertex to the topological order array.
-	this->_topology[this->_vertices - sortedNumber++ - 1] = sourceVertex + 1;
-	cout << hasPath(this->_topology[sourceVertex], this->_topology[this->_vertices - sortedNumber - 2]) << endl;
+	this->_topology[sortedNumber--] = sourceVertex + 1;
+	//cout << hasPath(this->_topology[sourceVertex], this->_topology[this->_vertices - sortedNumber - 2]) << endl;
 }
 bool Graph::hasUniqueSolution() {
 	int countedEdges = 0;
@@ -152,6 +152,7 @@ int main() {
 	int source, destination;
 	//Creates the graph structure and adds all the edges.
 	scanf("%d %d", &vertices, &edges);
+	sortedNumber = vertices - 1;
 	Graph graph(vertices, edges);
 	for (int i = 0; i < edges; i++) {
 		scanf("%d %d", &source, &destination);
