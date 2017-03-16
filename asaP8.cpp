@@ -45,7 +45,6 @@ class Graph {
 		void createEdge(int source, int destination);
 		void DFS();
 		void DFSVisit(int sourceVertex);
-		bool hasUniqueSolution();
 
 		//Auxiliar functions
 		bool isIncoherent()	 	{ return _incoherency; }
@@ -91,41 +90,31 @@ void Graph::DFSVisit(int sourceVertex) {
 	int index;
 	//Indicates this vertex as been visited (but not all of it's children).
 	this->_color[sourceVertex] = GREY;
-	list<int> li = _adjacencyList[sourceVertex];
 	//Recursevely visits all the children.
-	for (list<int>::const_iterator ci = li.begin(); ci != li.end(); ++ci) {
+	for (list<int>::const_iterator ci = _adjacencyList[sourceVertex].begin(); ci != _adjacencyList[sourceVertex].end(); ++ci) {
 		index = *ci - 1;
 		//Checks for back edges (cycles).
-		if (this->_color[index] == GREY) setIncoherent();
+		if (this->_color[index] == GREY) {
+			setIncoherent();
+			return;	
+		} 
 		else if (this->_color[index] == WHITE) DFSVisit(index);
 	}
 	//Indicates this vertex as been visited as well as all of it's children.
 	this->_color[sourceVertex] = BLACK;
 	//Adds the vertex to the topological order array.
 	this->_topology[sortedNumber--] = sourceVertex + 1;
-	//cout << hasPath(this->_topology[sourceVertex], this->_topology[this->_vertices - sortedNumber - 2]) << endl;
-}
-bool Graph::hasUniqueSolution() {
-	int countedEdges = 0;
-	for (int i = 0; i < this->_vertices - 1; i++) {
-		//Checks it there is an edge between each pair in the topological order.
-		if (hasPath(this->_topology[i], this->_topology[i + 1])) countedEdges++;
-		//If not all two sequencial vertices in the topological order are directly
-		//connected, there isn't a unique topological order, wich means the input
-		//is insufficient.
-		if (countedEdges != (i + 1)) {
+	if (sortedNumber < this->_vertices - 2) {
+		if (!hasPath(sourceVertex+1, this->_topology[sortedNumber + 2]))
 			setInsuficient();
-			return false;
-		}
 	}
-	return true;
 }
 
 /*------------------------------------------------------------------------------
 //	AUXILIAR FUNCTIONS
 ------------------------------------------------------------------------------*/
 bool Graph::hasPath(int source, int destination) {
-	//Checks if there is an edge from source (array index) to destination (index).
+	//Checks if there is an edge from source (index) to destination (index).
 	list<int>::const_iterator l;
 	for(l = this->_adjacencyList[source - 1].begin(); l != this->_adjacencyList[source - 1].end(); ++l)
 		if (*l == destination) return true;
@@ -151,11 +140,11 @@ int main() {
 	int edges, vertices;
 	int source, destination;
 	//Creates the graph structure and adds all the edges.
-	scanf("%d %d", &vertices, &edges);
+	int n = scanf("%d %d", &vertices, &edges);
 	sortedNumber = vertices - 1;
 	Graph graph(vertices, edges);
 	for (int i = 0; i < edges; i++) {
-		scanf("%d %d", &source, &destination);
+		n = scanf("%d %d", &source, &destination);
 		graph.createEdge(source, destination);
 	}
 	//If it already verified incoherency (trough cycles in createEdge), returns
@@ -167,16 +156,8 @@ int main() {
 
 	graph.DFS(); //Performs a DFS (to get a topological solution).
 
-	//If it found the graph to be cyclic in the DFS, returns.
-	if (graph.isIncoherent()) {
-		cout << "Incoerente" << endl;
-		return 0;
-	}
-
-	graph.hasUniqueSolution(); //Checks if the graph has a unique topological order.
-
-	if (graph.isInsuficient()) cout << "Insuficiente" << endl; //If it found it doens't, returns.
-	else if (!graph.isInsuficient() && !graph.isIncoherent())
-		cout << graph << endl; //If it has, prints it.
+	if (graph.isIncoherent()) cout << "Incoerente" << endl; //If it found the graph to be cyclic in the DFS, returns.
+	else if (graph.isInsuficient()) cout << "Insuficiente" << endl; //If it found it doens't, returns.
+	else if (!graph.isInsuficient() && !graph.isIncoherent()) cout << graph << endl; //If it has, prints it.
 	return 0;
 }
