@@ -53,7 +53,7 @@ class Graph {
 		void setIncoherent() 	{ _incoherency = true; }
 		void setInsuficient() 	{ _insuficiency = true; }
 		bool hasPath(int source, int destination);
-		void toString();
+		friend ostream& operator<<(ostream& os, const Graph &graph);
 };
 
 /*------------------------------------------------------------------------------
@@ -130,12 +130,13 @@ bool Graph::hasPath(int source, int destination) {
 		if (*l == destination) return true;
 	return false;
 }
-ostream& Graph::operator<<(ostream& os, const Graph &graph) {
+ostream& operator<<(ostream& os, const Graph &graph) {
 	//Prints the unique topological order (if there is one).
 	int i;
-	for (i = 0; i < this->_vertices - 1; i++)
-		os << this->_topology[i] << " ";
-	os << this->_topology[i];
+	for (i = 0; i < graph._vertices - 1; i++)
+		os << graph._topology[i] << " ";
+	os << graph._topology[i];
+	return os;
 }
 
 /*------------------------------------------------------------------------------
