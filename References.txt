@@ -1,0 +1,8 @@
+Referência para:
+	- Ordenação topológica corresponder à ordem cronológica das fotografias;
+	- Verificação de ciclos (que corresponde a input incoerente);
+
+Segundo as aulas de IAED (Introdução a Algoritmos e Estruturas de Dados) lecionadas no 2º semestre de 2015/2016, (pdf das aulas 25 e 26, slide 86), pode-se usar DFS para:
+	- Obter um ordenação topológica de um grafo;
+	- Verificar se um grafo tem ciclos;
+	- Visitar todos os elementos de um grafo, sendo que cada vértice é visitado apenas 1 vez;
