@@ -4,9 +4,10 @@
 [2nd Year - 2nd Semester]
 
 Objective: Order V elements based on E relations (between pairs of elements)
-Language: C++
-Efficiency: O(V + E) - linear
-Method: Depth First Search (DFS).
+
+Language: C++  
+Efficiency: O(V + E) - linear  
+Method: Depth First Search (DFS).  
 
 A relation is a pair of elements u, v representing element u would be before element v if all the elements were in order.
 
